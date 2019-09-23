@@ -26,4 +26,4 @@ Scripts to fit tapered power law parameterisation to sillburp emissions results.
 
 ## *collate_aureole.gmt*, *collate_decay_time.gmt*, *collate_p.gmt*
 
-Scripts to collate, contour and plot the 3 power law parameters.  Also writes out the collated values in a format that can be used by *LIPburp/dim2mpt.awk*.
+Scripts to collate, contour and plot the 3 power law parameters.  Also writes out the collated values in a format that can be used by *LIPburp/dim2mtp.awk*.
