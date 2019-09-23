@@ -21,4 +21,4 @@ sillburp: $(OBJ_SILL) sillburp.h burp.h
 	$(CCC) $(CFLAGS) -o $@ $(OBJ_SILL) -lm
 
 clean:
-	/bin/rm $(OBJ_SILL) sillburp *.time *.xy *.xyz *.dat
+	/bin/rm $(OBJ_SILL) sillburp *.time *.xy *.dat
