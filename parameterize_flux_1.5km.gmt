@@ -1,0 +1,307 @@
+#!/bin/bash
+
+# FIT TAPERED POWER LAW PARAMETIZATION TO METHANE EMISSION FROM ONE SILL
+# WRITTEN OUT FROM SILLBURP
+# THIS VERSION FITS THE FLUX
+
+# SAVE FILE
+
+SAVE_FILE=./parameterize_flux_results.dat
+/bin/rm $SAVE_FILE
+
+DEPTH=1.5
+THICKNESSES="50 100 200 300 400"
+#THICKNESSES="300"
+
+# FITTING PARAMETERS
+
+CALCULATE=1
+	EXPONENT2_MIN=0.50
+	EXPONENT2_MAX=0.70
+	EXPONENT2_INC=0.01
+	
+	
+for THICK in $THICKNESSES
+do
+
+
+if [ $THICK -eq 50 ]; then
+	IN=./z50m.dec.time
+	OUT=./parameterize_z50m.dec.ps
+	TIME_MIN=1e0
+	TIME_MAX=1.5e3
+	TIMESCALE_MIN=1
+	TIMESCALE_MAX=100
+	TIMESCALE_INC=1
+elif [ $THICK -eq 100 ]; then
+	IN=./z100m.dec.time
+	OUT=./parameterize_z100m.dec.ps
+	TIME_MIN=1e0
+	TIME_MAX=1e4
+	TIMESCALE_MIN=5
+	TIMESCALE_MAX=4000
+	TIMESCALE_INC=1
+elif [ $THICK -eq 200 ]; then
+	IN=./z200m.dec.time
+	OUT=./parameterize_z200m.dec.ps
+	TIME_MIN=1e0
+	TIME_MAX=3e4
+	TIMESCALE_MIN=100
+	TIMESCALE_MAX=8000
+	TIMESCALE_INC=1
+elif [ $THICK -eq 300 ]; then
+	IN=./z300m.dec.time
+	OUT=./parameterize_z300m.dec.ps
+	TIME_MIN=1e0
+	TIME_MAX=7e4
+	TIMESCALE_MIN=1000
+	TIMESCALE_MAX=20000
+	TIMESCALE_INC=1
+elif [ $THICK -eq 400 ]; then
+	IN=./z400m.dec.time
+	OUT=./parameterize_z400m.dec.ps
+	TIME_MIN=1e0
+	TIME_MAX=3e5
+	TIMESCALE_MIN=1000
+	TIMESCALE_MAX=20000
+	TIMESCALE_INC=1
+fi
+
+#
+# PLOTTING PARAMETERS
+#
+
+XFRAME=6
+YFRAME=$XFRAME
+MISFIT_GRID=-3/1/500/3000
+gmt gmtset FONT_TITLE 14p,Helvetica,black
+
+#
+
+echo
+echo " Fitting model to methane emission history in file: $IN"
+echo " Plotting results in file: $OUT"
+
+#
+# LABILE KEROGEN
+#
+
+# THERMAL COOLING TIME SCALE
+
+TAU_THERMAL=`echo "$THICK * $THICK / 31.536" | bc -l`
+
+# GET PART OF DATA AFTER SILL INJECTION
+
+awk '{if ($1>0) print $1,($64+$66)*1e6}' $IN > tmp.in.m
+awk '{if ($1>0) print $1,($6+$8)*1e6}' $IN > tmp.in.q
+
+# FIND TOTAL METHANE EXPELLED
+
+CFINAL_OIL=`awk '{t=$1;c=$2}END{print c}' tmp.in.m`
+echo
+echo "LABILE KEROGEN & OIL CRACKING"
+
+# FIT TAPERED POWER LAW TO ALL DATA
+
+awk \
+	-v tmin=$TIME_MIN \
+	-v tmax=$TIME_MAX \
+	-v tscalemin=$TIMESCALE_MIN \
+	-v tscalemax=$TIMESCALE_MAX \
+	-v tscaleinc=$TIMESCALE_INC \
+	-v exp2min=$EXPONENT2_MIN \
+	-v exp2max=$EXPONENT2_MAX \
+	-v exp2inc=$EXPONENT2_INC \
+	-v massfinal=$CFINAL_OIL \
+	'BEGIN{n=0}{if ($1>=tmin && $1<=tmax) {n++;t[n]=$1;c[n]=$2}}END \
+	{for (tau=tscalemin; tau<=tscalemax; tau+=tscaleinc){ \
+		for (p=exp2min; p<=exp2max; p+=exp2inc){ \
+			mis=0; \
+			for (i=1; i<=n; i++){ \
+				m=massfinal*(1-exp(-(t[i]/tau)^p)); \
+				q=(p*massfinal*exp(-(t[i]/tau)^p)*(t[i]/tau)^p)/t[i]; \
+				dif=log(c[i])-log(q); \
+				mis+=dif*dif; \
+#				print t[i],q[i],dif,mis; \
+				}; \
+			if (mis>0) {mis=sqrt(mis/n)}else{mis=0}; \
+			print tau, p, mis; \
+			} \
+		} \
+	}' tmp.in.q > tmp.misfit.oil
+
+# MAKE MISFIT GRID
+
+MISFIT_GRID=$TIMESCALE_MIN/$TIMESCALE_MAX/$EXPONENT2_MIN/$EXPONENT2_MAX
+MISFIT_MESH=$TIMESCALE_INC/$EXPONENT2_INC
+gmt xyz2grd tmp.misfit.oil -R$MISFIT_GRID -I$MISFIT_MESH -V -Gtmp.grd
+gmt grdsample tmp.grd -I1/0.001 -Gtmp.oil.grd
+#echo " Interpolated grd limits:"
+grdinfo tmp.oil.grd -M > tmp
+P_OIL_GRID=`awk '{if(NR==8)print $10}' tmp`
+
+# FIND MINIMUM
+
+gmtinfo -El tmp.misfit.oil > tmp.1
+TAU_OIL=`awk '{print $1}' tmp.1`
+P_OIL=`awk '{print $2}' tmp.1`
+MIS_OIL=`awk '{print $3}' tmp.1`
+TAU_RELATIVE_OIL=`echo "$TAU_OIL / $TAU_THERMAL" | bc -l`
+
+echo " Final cumulative methane: $CFINAL_OIL Mt"
+echo " Best fitting time scale: $TAU_OIL yr"
+echo " Thermal decay time scale: $TAU_THERMAL yr"
+echo " Time scale factor: $TAU_RELATIVE_OIL"
+echo " Best fitting power: $P_OIL  $P_OIL_GRID"
+echo " RMS Misfit: $MIS_OIL Mt"
+echo
+
+
+#
+# REFRACTORY KEROGEN
+#
+
+# GET PART OF DATA AFTER SILL INJECTION
+
+awk '{if ($1>0) print $1,($65)*1e6}' $IN > tmp.in.m
+awk '{if ($1>0) print $1,($7)*1e6}' $IN > tmp.in.q
+
+# FIND TOTAL METHANE EXPELLED
+
+CFINAL_REF=`awk '{t=$1;c=$2}END{print c}' tmp.in.m`
+echo
+echo "REFRACTORY KEROGEN"
+
+# FIT TAPERED POWER LAW TO ALL DATA
+
+awk \
+	-v tmin=$TIME_MIN \
+	-v tmax=$TIME_MAX \
+	-v tscalemin=$TIMESCALE_MIN \
+	-v tscalemax=$TIMESCALE_MAX \
+	-v tscaleinc=$TIMESCALE_INC \
+	-v exp2min=$EXPONENT2_MIN \
+	-v exp2max=$EXPONENT2_MAX \
+	-v exp2inc=$EXPONENT2_INC \
+	-v massfinal=$CFINAL_REF \
+	'BEGIN{n=0}{if ($1>=tmin && $1<=tmax) {n++;t[n]=$1;c[n]=$2}}END \
+	{for (tau=tscalemin; tau<=tscalemax; tau+=tscaleinc){ \
+		for (p=exp2min; p<=exp2max; p+=exp2inc){ \
+			mis=0; \
+			for (i=1; i<=n; i++){ \
+				m=massfinal*(1-exp(-(t[i]/tau)^p)); \
+				q=(p*massfinal*exp(-(t[i]/tau)^p)*(t[i]/tau)^p)/t[i]; \
+				dif=log(c[i])-log(q); \
+				mis+=dif*dif; \
+#				print t[i],q[i],dif,mis; \
+				}; \
+			if (mis>0) {mis=sqrt(mis/n)}else{mis=0}; \
+			print tau, p, mis; \
+			} \
+		} \
+	}' tmp.in.q > tmp.misfit.ref
+
+
+# MAKE MISFIT GRID
+
+MISFIT_GRID=$TIMESCALE_MIN/$TIMESCALE_MAX/$EXPONENT2_MIN/$EXPONENT2_MAX
+MISFIT_MESH=$TIMESCALE_INC/$EXPONENT2_INC
+gmt xyz2grd tmp.misfit.ref -R$MISFIT_GRID -I$MISFIT_MESH -V -Gtmp.grd
+gmt grdsample tmp.grd -I1/0.001 -Gtmp.ref.grd
+#echo " Interpolated grd limits:"
+grdinfo tmp.ref.grd -M > tmp
+P_REF_GRID=`awk '{if(NR==8)print $10}' tmp`
+
+
+# FIND MINIMUM
+
+gmtinfo -El tmp.misfit.ref > tmp.1
+TAU_REF=`awk '{print $1}' tmp.1`
+P_REF=`awk '{print $2}' tmp.1`
+MIS_REF=`awk '{print $3}' tmp.1`
+TAU_RELATIVE_REF=`echo "$TAU_REF / $TAU_THERMAL" | bc -l`
+echo " Final cumulative methane: $CFINAL_REF Mt"
+echo " Best fitting time scale: $TAU_REF yr"
+echo " Thermal decay time scale: $TAU_THERMAL yr"
+echo " Time scale factor: $TAU_RELATIVE_REF"
+echo " Best fitting power: $P_REF  $P_REF_GRID"
+echo " RMS Misfit: $MIS_REF Mt"
+echo
+
+
+# SAVE RESULTS
+
+echo "$DEPTH $THICK $TAU_RELATIVE_OIL $TAU_RELATIVE_REF $TAU_OIL $TAU_REF $P_OIL_GRID $P_REF_GRID" >> $SAVE_FILE
+
+
+# PLOT CUMULATIVE METHANE
+
+gmt psbasemap -R1e0/1e6/1e0/5e2 -JX${XFRAME}cl/${YFRAME}cl -Ba1pf3:"Time after Sill Injection (yr)":/a1pf3:"Cumulative CH@-4@- (Mt)":WeSn -K -P -X3.5 -Y16 > $OUT
+
+awk '{if ($1>0) print $1,($65)*1e6}' $IN | \
+	gmt psxy -R -JX -W4p,128/128/255 -K -O >> $OUT
+awk '{if ($1>0) print $1,($64+$66)*1e6}' $IN | \
+	gmt psxy -R -JX -W4p,255/128/128 -K -O >> $OUT
+
+awk -v tau=$TAU_REF -v p=$P_REF -v mmax=$CFINAL_REF 'BEGIN{for(a=0;a<=6;a+=0.1){t=10^a; m=mmax*(1 - exp(-(t/tau)^p)); print t,m}}' | \
+	gmt psxy -R -JX  -W1p,blue -K -O >> $OUT
+awk -v tau=$TAU_OIL -v p=$P_OIL -v mmax=$CFINAL_OIL 'BEGIN{for(a=0;a<=6;a+=0.1){t=10^a; m=mmax*(1 - exp(-(t/tau)^p)); print t,m}}' | \
+	gmt psxy -R -JX  -W1p,red -K -O >> $OUT
+	
+# PLOT LABILE MISFIT GRID
+
+awk -v p=$P_OIL '{if ($2==p) print $1, $3}' tmp.misfit.oil | \
+	gmt psxy -R0/20000/0/1 -JX${XFRAME}/${YFRAME} -Bxa5000f1000+l"Time Scale, @~t@~ (yr)" -Bya0.5f0.1+l"Misfit" -BWeSn -W1p,red -O -K -X9 >> $OUT
+awk -v p=$P_REF '{if ($2==p) print $1, $3}' tmp.misfit.ref | \
+	gmt psxy -R -JX -W1p,blue -O -K >> $OUT
+
+
+# PLOT METHANE FLUX
+
+gmt psbasemap -R1e0/1e6/1e-4/1e0 -JX${XFRAME}cl/${YFRAME}cl -Ba1pf3:"Time after Sill Injection (yr)":/a1pf3:"CH@-4@- Flux (Mt/yr)":WeSn -K -O -X-9 -Y-9 >> $OUT
+
+awk '{if ($1>0) print $1,($7)*1e6}' $IN | \
+	gmt psxy -R -JX -W4p,128/128/255 -K -O >> $OUT
+awk '{if ($1>0) print $1,($6+$8)*1e6}' $IN | \
+	gmt psxy -R -JX -W4p,255/128/128 -K -O >> $OUT
+
+awk -v tau=$TAU_REF -v p=$P_REF -v mmax=$CFINAL_REF 'BEGIN{for(a=0;a<=6;a+=0.1){t=10^a; q=(p*mmax*exp(-(t/tau)^p)*(t/tau)^p)/t; print t,q}}' | \
+	gmt psxy -R -JX  -W1p,blue -K -O >> $OUT
+awk -v tau=$TAU_OIL -v p=$P_OIL -v mmax=$CFINAL_OIL 'BEGIN{for(a=0;a<=6;a+=0.1){t=10^a; q=(p*mmax*exp(-(t/tau)^p)*(t/tau)^p)/t; print t,q}}' | \
+	gmt psxy -R -JX  -W1p,red -O -K >> $OUT
+
+
+makecpt -Chot -T0/1/0.1 -I > tmp.cpt
+grdimage tmp.oil.grd -JX4 -Ctmp.cpt -Bxa5000f1000+l"Time Scale, @~t@~ (yr)" -Bya0.05f0.01+l"Power" -BWeSn -O -X9 >> $OUT
+
+
+
+#
+# DISPLAY RESULTS AND EXIT
+#
+
+gv $OUT
+
+done
+
+echo
+echo "Results:"
+cat $SAVE_FILE
+echo
+
+exit
+
+
+integral q exp(-(t/tau)^p) dt = -(q t ((t/tau)^p)^(-1/p) Gamma(1/p, (t/tau)^p))/p+constant
+
+-(q tau Gamma(1/p, (t/tau)^p))/p - (-(q tau Gamma(1/p, (0/tau)^p))/p)
+
+-(q t ((t/tau)^p)^(-1/p) Gamma(1/p, (t/tau)^p))/p
+
+
+integral_0^T q exp(-sqrt(x/t)) dx = q (2 t-2 t e^(-sqrt(T/t)) (sqrt(T/t)+1))
+
+integral_0^T q exp(-sqrt(x)) dx = q (2 t-2 t e^(-sqrt(T/t)) (sqrt(T/t)+1))
+
+lim_(T->infinity) q (2 t-2 t e^(-sqrt(T/t)) (sqrt(T/t)+1)) =
+e^(-sqrt(T/t)) (-(2 q sqrt(T))/sqrt(1/t)-2 (q t)+O((1/T)^(23/2)))+2 q t

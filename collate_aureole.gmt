@@ -1,0 +1,262 @@
+#!/bin/bash
+
+# COLLATE AND GRID PARAMETERIZED DECAY TIME
+# FOR LABILE KEROGEN BREAKDOWN FOLLOWED BY OIL CRACKING 
+# AND REFRACTORY KEROGEN BREAKDOWN
+
+OUT=./collate_aureole.ps
+
+XFRAME=10
+YFRAME=6.18
+
+
+
+gmt psbasemap -R0/4/0/10 -JX${XFRAME}/${YFRAME} -Bxa1f0.5+l"Depth of Intrusion (km)" -Bya1f2+l"Aureole Width (units of sheet)" -BSn -K -P -X4.5 -Y22 > $OUT
+
+
+#
+# DLESS AUREOLES WRITTEN OUT DIRECT FROM SILLBURP
+#
+
+# CRACKING
+awk '{aureole=$62}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z50m.dec.time > sill_cracking_aureoles_direct_50.xy
+awk '{aureole=$62}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z50m.dec.time >> sill_cracking_aureoles_direct_50.xy
+awk '{aureole=$62}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z50m.dec.time >> sill_cracking_aureoles_direct_50.xy
+awk '{aureole=$62}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z50m.dec.time >> sill_cracking_aureoles_direct_50.xy
+awk '{aureole=$62}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z50m.dec.time >> sill_cracking_aureoles_direct_50.xy
+awk '{aureole=$62}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z50m.dec.time >> sill_cracking_aureoles_direct_50.xy
+awk '{aureole=$62}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z50m.dec.time >> sill_cracking_aureoles_direct_50.xy
+gmt psxy sill_cracking_aureoles_direct_50.xy -R -JX -W3p,orange -K -O >> $OUT
+gmt psxy sill_cracking_aureoles_direct_50.xy -R -JX -W1,orange -Sd0.3 -K -O >> $OUT
+# REFRACTORY
+awk '{aureole=$61}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z50m.dec.time > sill_refractory_aureoles_direct_50.xy
+awk '{aureole=$61}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z50m.dec.time >> sill_refractory_aureoles_direct_50.xy
+awk '{aureole=$61}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z50m.dec.time >> sill_refractory_aureoles_direct_50.xy
+awk '{aureole=$61}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z50m.dec.time >> sill_refractory_aureoles_direct_50.xy
+awk '{aureole=$61}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z50m.dec.time >> sill_refractory_aureoles_direct_50.xy
+awk '{aureole=$61}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z50m.dec.time >> sill_refractory_aureoles_direct_50.xy
+awk '{aureole=$61}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z50m.dec.time >> sill_refractory_aureoles_direct_50.xy
+gmt psxy sill_refractory_aureoles_direct_50.xy -R -JX -W3p,green -K -O >> $OUT
+gmt psxy sill_refractory_aureoles_direct_50.xy -R -JX -W1p,green -Sd0.2 -K -O >> $OUT
+# LABILE
+awk '{aureole=$60}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z50m.dec.time > sill_labile_aureoles_direct_50.xy
+awk '{aureole=$60}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z50m.dec.time >> sill_labile_aureoles_direct_50.xy
+awk '{aureole=$60}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z50m.dec.time >> sill_labile_aureoles_direct_50.xy
+awk '{aureole=$60}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z50m.dec.time >> sill_labile_aureoles_direct_50.xy
+awk '{aureole=$60}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z50m.dec.time >> sill_labile_aureoles_direct_50.xy
+awk '{aureole=$60}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z50m.dec.time >> sill_labile_aureoles_direct_50.xy
+awk '{aureole=$60}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z50m.dec.time >> sill_labile_aureoles_direct_50.xy
+gmt psxy sill_labile_aureoles_direct_50.xy -R -JX -W3p,purple -K -O >> $OUT
+gmt psxy sill_labile_aureoles_direct_50.xy -R -JX -W1p,purple -Sd0.2 -K -O >> $OUT
+
+
+# CRACKING
+awk '{aureole=$62}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z100m.dec.time > sill_cracking_aureoles_direct_100.xy
+awk '{aureole=$62}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z100m.dec.time >> sill_cracking_aureoles_direct_100.xy
+awk '{aureole=$62}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z100m.dec.time >> sill_cracking_aureoles_direct_100.xy
+awk '{aureole=$62}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z100m.dec.time >> sill_cracking_aureoles_direct_100.xy
+awk '{aureole=$62}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z100m.dec.time >> sill_cracking_aureoles_direct_100.xy
+awk '{aureole=$62}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z100m.dec.time >> sill_cracking_aureoles_direct_100.xy
+awk '{aureole=$62}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z100m.dec.time >> sill_cracking_aureoles_direct_100.xy
+gmt psxy sill_cracking_aureoles_direct_100.xy -R -JX -W2p,orange -K -O >> $OUT
+gmt psxy sill_cracking_aureoles_direct_100.xy -R -JX -W1,orange -Sd0.3 -K -O >> $OUT
+# REFRACTORY
+awk '{aureole=$61}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z100m.dec.time > sill_refractory_aureoles_direct_100.xy
+awk '{aureole=$61}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z100m.dec.time >> sill_refractory_aureoles_direct_100.xy
+awk '{aureole=$61}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z100m.dec.time >> sill_refractory_aureoles_direct_100.xy
+awk '{aureole=$61}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z100m.dec.time >> sill_refractory_aureoles_direct_100.xy
+awk '{aureole=$61}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z100m.dec.time >> sill_refractory_aureoles_direct_100.xy
+awk '{aureole=$61}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z100m.dec.time >> sill_refractory_aureoles_direct_100.xy
+awk '{aureole=$61}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z100m.dec.time >> sill_refractory_aureoles_direct_100.xy
+gmt psxy sill_refractory_aureoles_direct_100.xy -R -JX -W2p,green -K -O >> $OUT
+gmt psxy sill_refractory_aureoles_direct_100.xy -R -JX -W1p,green -Sd0.2 -K -O >> $OUT
+# LABILE
+awk '{aureole=$60}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z100m.dec.time > sill_labile_aureoles_direct_100.xy
+awk '{aureole=$60}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z100m.dec.time >> sill_labile_aureoles_direct_100.xy
+awk '{aureole=$60}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z100m.dec.time >> sill_labile_aureoles_direct_100.xy
+awk '{aureole=$60}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z100m.dec.time >> sill_labile_aureoles_direct_100.xy
+awk '{aureole=$60}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z100m.dec.time >> sill_labile_aureoles_direct_100.xy
+awk '{aureole=$60}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z100m.dec.time >> sill_labile_aureoles_direct_100.xy
+awk '{aureole=$60}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z100m.dec.time >> sill_labile_aureoles_direct_100.xy
+gmt psxy sill_labile_aureoles_direct_100.xy -R -JX -W2p,purple -K -O >> $OUT
+gmt psxy sill_labile_aureoles_direct_100.xy -R -JX -W1p,purple -Sd0.2 -K -O >> $OUT
+
+
+# CRACKING
+awk '{aureole=$62}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z200m.dec.time > sill_cracking_aureoles_direct_200.xy
+awk '{aureole=$62}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z200m.dec.time >> sill_cracking_aureoles_direct_200.xy
+awk '{aureole=$62}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z200m.dec.time >> sill_cracking_aureoles_direct_200.xy
+awk '{aureole=$62}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z200m.dec.time >> sill_cracking_aureoles_direct_200.xy
+awk '{aureole=$62}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z200m.dec.time >> sill_cracking_aureoles_direct_200.xy
+awk '{aureole=$62}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z200m.dec.time >> sill_cracking_aureoles_direct_200.xy
+awk '{aureole=$62}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z200m.dec.time >> sill_cracking_aureoles_direct_200.xy
+gmt psxy sill_cracking_aureoles_direct_200.xy -R -JX -W1p,orange -K -O >> $OUT
+gmt psxy sill_cracking_aureoles_direct_200.xy -R -JX -W1p,orange -Ss0.3 -K -O >> $OUT
+# REFRACTORY
+awk '{aureole=$61}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z200m.dec.time > sill_refractory_aureoles_direct_200.xy
+awk '{aureole=$61}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z200m.dec.time >> sill_refractory_aureoles_direct_200.xy
+awk '{aureole=$61}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z200m.dec.time >> sill_refractory_aureoles_direct_200.xy
+awk '{aureole=$61}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z200m.dec.time >> sill_refractory_aureoles_direct_200.xy
+awk '{aureole=$61}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z200m.dec.time >> sill_refractory_aureoles_direct_200.xy
+awk '{aureole=$61}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z200m.dec.time >> sill_refractory_aureoles_direct_200.xy
+awk '{aureole=$61}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z200m.dec.time >> sill_refractory_aureoles_direct_200.xy
+gmt psxy sill_refractory_aureoles_direct_200.xy -R -JX -W1p,green -K -O >> $OUT
+gmt psxy sill_refractory_aureoles_direct_200.xy -R -JX -W1p,green -Ss0.2 -K -O >> $OUT
+# LABILE
+awk '{aureole=$60}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z200m.dec.time > sill_labile_aureoles_direct_200.xy
+awk '{aureole=$60}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z200m.dec.time >> sill_labile_aureoles_direct_200.xy
+awk '{aureole=$60}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z200m.dec.time >> sill_labile_aureoles_direct_200.xy
+awk '{aureole=$60}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z200m.dec.time >> sill_labile_aureoles_direct_200.xy
+awk '{aureole=$60}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z200m.dec.time >> sill_labile_aureoles_direct_200.xy
+awk '{aureole=$60}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z200m.dec.time >> sill_labile_aureoles_direct_200.xy
+awk '{aureole=$60}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z200m.dec.time >> sill_labile_aureoles_direct_200.xy
+gmt psxy sill_labile_aureoles_direct_200.xy -R -JX -W1p,purple -K -O >> $OUT
+gmt psxy sill_labile_aureoles_direct_200.xy -R -JX -W1p,purple -Ss0.2 -K -O >> $OUT
+
+
+# CRACKING
+awk '{aureole=$62}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z300m.dec.time > sill_cracking_aureoles_direct_300.xy
+awk '{aureole=$62}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z300m.dec.time >> sill_cracking_aureoles_direct_300.xy
+awk '{aureole=$62}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z300m.dec.time >> sill_cracking_aureoles_direct_300.xy
+awk '{aureole=$62}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z300m.dec.time >> sill_cracking_aureoles_direct_300.xy
+awk '{aureole=$62}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z300m.dec.time >> sill_cracking_aureoles_direct_300.xy
+awk '{aureole=$62}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z300m.dec.time >> sill_cracking_aureoles_direct_300.xy
+awk '{aureole=$62}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z300m.dec.time >> sill_cracking_aureoles_direct_300.xy
+gmt psxy sill_cracking_aureoles_direct_300.xy -R -JX -W1p,orange,- -K -O >> $OUT
+gmt psxy sill_cracking_aureoles_direct_300.xy -R -JX -W1p,orange -S+0.3 -K -O >> $OUT
+# REFRACTORY
+awk '{aureole=$61}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z300m.dec.time > sill_refractory_aureoles_direct_300.xy
+awk '{aureole=$61}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z300m.dec.time >> sill_refractory_aureoles_direct_300.xy
+awk '{aureole=$61}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z300m.dec.time >> sill_refractory_aureoles_direct_300.xy
+awk '{aureole=$61}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z300m.dec.time >> sill_refractory_aureoles_direct_300.xy
+awk '{aureole=$61}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z300m.dec.time >> sill_refractory_aureoles_direct_300.xy
+awk '{aureole=$61}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z300m.dec.time >> sill_refractory_aureoles_direct_300.xy
+awk '{aureole=$61}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z300m.dec.time >> sill_refractory_aureoles_direct_300.xy
+gmt psxy sill_refractory_aureoles_direct_300.xy -R -JX -W1p,green,- -K -O >> $OUT
+gmt psxy sill_refractory_aureoles_direct_300.xy -R -JX -W1p,green -S+0.2 -K -O >> $OUT
+# LABILE
+awk '{aureole=$60}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z300m.dec.time > sill_labile_aureoles_direct_300.xy
+awk '{aureole=$60}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z300m.dec.time >> sill_labile_aureoles_direct_300.xy
+awk '{aureole=$60}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z300m.dec.time >> sill_labile_aureoles_direct_300.xy
+awk '{aureole=$60}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z300m.dec.time >> sill_labile_aureoles_direct_300.xy
+awk '{aureole=$60}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z300m.dec.time >> sill_labile_aureoles_direct_300.xy
+awk '{aureole=$60}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z300m.dec.time >> sill_labile_aureoles_direct_300.xy
+awk '{aureole=$60}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z300m.dec.time >> sill_labile_aureoles_direct_300.xy
+gmt psxy sill_labile_aureoles_direct_300.xy -R -JX -W1p,purple,- -K -O >> $OUT
+gmt psxy sill_labile_aureoles_direct_300.xy -R -JX -W1p,purple -S+0.2 -K -O >> $OUT
+
+
+# CRACKING
+awk '{aureole=$62}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z400m.dec.time > sill_cracking_aureoles_direct_400.xy
+awk '{aureole=$62}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z400m.dec.time >> sill_cracking_aureoles_direct_400.xy
+awk '{aureole=$62}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z400m.dec.time >> sill_cracking_aureoles_direct_400.xy
+awk '{aureole=$62}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z400m.dec.time >> sill_cracking_aureoles_direct_400.xy
+awk '{aureole=$62}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z400m.dec.time >> sill_cracking_aureoles_direct_400.xy
+awk '{aureole=$62}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z400m.dec.time >> sill_cracking_aureoles_direct_400.xy
+awk '{aureole=$62}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z400m.dec.time >> sill_cracking_aureoles_direct_400.xy
+gmt psxy sill_cracking_aureoles_direct_400.xy -R -JX -W0.5p,orange,- -K -O >> $OUT
+gmt psxy sill_cracking_aureoles_direct_400.xy -R -JX -W1p,orange -Sx0.3 -K -O >> $OUT
+# REFRACTORY
+awk '{aureole=$61}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z400m.dec.time > sill_refractory_aureoles_direct_400.xy
+awk '{aureole=$61}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z400m.dec.time >> sill_refractory_aureoles_direct_400.xy
+awk '{aureole=$61}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z400m.dec.time >> sill_refractory_aureoles_direct_400.xy
+awk '{aureole=$61}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z400m.dec.time >> sill_refractory_aureoles_direct_400.xy
+awk '{aureole=$61}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z400m.dec.time >> sill_refractory_aureoles_direct_400.xy
+awk '{aureole=$61}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z400m.dec.time >> sill_refractory_aureoles_direct_400.xy
+awk '{aureole=$61}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z400m.dec.time >> sill_refractory_aureoles_direct_400.xy
+gmt psxy sill_refractory_aureoles_direct_400.xy -R -JX -W0.5p,green,- -K -O >> $OUT
+gmt psxy sill_refractory_aureoles_direct_400.xy -R -JX -W1p,green -Sx0.2 -K -O >> $OUT
+# LABILE
+awk '{aureole=$60}END{print 0.5, 0.5*aureole}' ../single/sill_0.5km/z400m.dec.time > sill_labile_aureoles_direct_400.xy
+awk '{aureole=$60}END{print 1.0, 0.5*aureole}' ../single/sill_1km/z400m.dec.time >> sill_labile_aureoles_direct_400.xy
+awk '{aureole=$60}END{print 1.5, 0.5*aureole}' ../single/sill_1.5km/z400m.dec.time >> sill_labile_aureoles_direct_400.xy
+awk '{aureole=$60}END{print 2.0, 0.5*aureole}' ../single/sill_2km/z400m.dec.time >> sill_labile_aureoles_direct_400.xy
+awk '{aureole=$60}END{print 2.5, 0.5*aureole}' ../single/sill_2.5km/z400m.dec.time >> sill_labile_aureoles_direct_400.xy
+awk '{aureole=$60}END{print 3.0, 0.5*aureole}' ../single/sill_3km/z400m.dec.time >> sill_labile_aureoles_direct_400.xy
+awk '{aureole=$60}END{print 3.5, 0.5*aureole}' ../single/sill_3.5km/z400m.dec.time >> sill_labile_aureoles_direct_400.xy
+gmt psxy sill_labile_aureoles_direct_400.xy -R -JX -W0.5p,purple,- -K -O >> $OUT
+gmt psxy sill_labile_aureoles_direct_400.xy -R -JX -W1p,purple -Sx0.2 -K -O >> $OUT
+
+
+#
+# CONTOUR PLOTS OF *TOTAL* DLESS AUREOLE THICKNESS 
+# ON AXES OF SILL THICKNESS VERSUS EMPLACEMENT DEPTH
+#
+
+
+gmt psbasemap -R -JX -Bxa1f0.5+l"Depth of Intrusion (km)" -Bya1f2+l"Aureole Width (units of sheet)" -BWe -K -O >> $OUT
+
+awk '{print $1, 50, 2*$2}' sill_labile_aureoles_direct_50.xy > sill_labile_aureoles_direct.xyz
+awk '{print $1, 100, 2*$2}' sill_labile_aureoles_direct_100.xy >> sill_labile_aureoles_direct.xyz
+awk '{print $1, 200, 2*$2}' sill_labile_aureoles_direct_200.xy >> sill_labile_aureoles_direct.xyz
+awk '{print $1, 300, 2*$2}' sill_labile_aureoles_direct_300.xy >> sill_labile_aureoles_direct.xyz
+awk '{print $1, 400, 2*$2}' sill_labile_aureoles_direct_400.xy >> sill_labile_aureoles_direct.xyz
+
+awk '{print $1, 50, 2*$2}' sill_cracking_aureoles_direct_50.xy > sill_cracking_aureoles_direct.xyz
+awk '{print $1, 100, 2*$2}' sill_cracking_aureoles_direct_100.xy >> sill_cracking_aureoles_direct.xyz
+awk '{print $1, 200, 2*$2}' sill_cracking_aureoles_direct_200.xy >> sill_cracking_aureoles_direct.xyz
+awk '{print $1, 300, 2*$2}' sill_cracking_aureoles_direct_300.xy >> sill_cracking_aureoles_direct.xyz
+awk '{print $1, 400, 2*$2}' sill_cracking_aureoles_direct_400.xy >> sill_cracking_aureoles_direct.xyz
+
+awk '{print $1, 50, 2*$2}' sill_refractory_aureoles_direct_50.xy > sill_refractory_aureoles_direct.xyz
+awk '{print $1, 100, 2*$2}' sill_refractory_aureoles_direct_100.xy >> sill_refractory_aureoles_direct.xyz
+awk '{print $1, 200, 2*$2}' sill_refractory_aureoles_direct_200.xy >> sill_refractory_aureoles_direct.xyz
+awk '{print $1, 300, 2*$2}' sill_refractory_aureoles_direct_300.xy >> sill_refractory_aureoles_direct.xyz
+awk '{print $1, 400, 2*$2}' sill_refractory_aureoles_direct_400.xy >> sill_refractory_aureoles_direct.xyz
+
+join sill_labile_aureoles_direct.xyz sill_cracking_aureoles_direct.xyz > tmp.1
+awk '{print $1, $2, 0.2*$3 + 0.8*$5}' tmp.1 > sill_labile_cracking_aureoles_direct.xyz
+
+
+makecpt -Cseis -T1/9/1 -I -Z > tmp.cpt
+
+surface sill_cracking_aureoles_direct.xyz -R0/4/0/500 -I0.5/50 -r -Gsill_cracking_aureoles_direct.grd
+grdsample sill_cracking_aureoles_direct.grd -I0.01/0.1 -Gsill_cracking_aureoles_direct_plotting.grd
+grdimage sill_cracking_aureoles_direct_plotting.grd -Ctmp.cpt -R0.2/3.5/0/400 -JX6 -Bxa1f0.1+l"Depth (km)" -Bya100f20+l"Thickness (m)" -BWeSn -O -K -Y-10 >> $OUT
+grdcontour sill_cracking_aureoles_direct_plotting.grd -R -JX -A1 -Gn1 -W0.5p -O -K >> $OUT
+
+surface sill_refractory_aureoles_direct.xyz -R0/4/0/500 -I0.5/50 -r -Gsill_refractory_aureoles_direct.grd
+grdsample sill_refractory_aureoles_direct.grd -I0.01/0.1 -Gsill_refractory_aureoles_direct_plotting.grd
+grdimage sill_refractory_aureoles_direct_plotting.grd -Ctmp.cpt -R0.2/3.5/0/400 -JX6 -Bxa1f0.1+l"Depth (km)" -Bya100f20+l"Thickness (m)" -BWeSn -O -K -X8 >> $OUT
+grdcontour sill_refractory_aureoles_direct_plotting.grd -R -JX -A1 -Gn1 -W0.5p -O -K >> $OUT
+
+surface sill_labile_aureoles_direct.xyz -R0/4/0/500 -I0.5/50 -r -Gsill_labile_aureoles_direct.grd
+grdsample sill_labile_aureoles_direct.grd -I0.01/0.1 -Gsill_labile_aureoles_direct_plotting.grd
+grdimage sill_labile_aureoles_direct_plotting.grd -Ctmp.cpt -R0.2/3.5/0/400 -JX6 -Bxa1f0.1+l"Depth (km)" -Bya100f20+l"Thickness (m)" -BWeSn -O -K -X-8 -Y-8 >> $OUT
+grdcontour sill_labile_aureoles_direct_plotting.grd -R -JX -A1 -Gn1 -W0.5p -O -K >> $OUT
+
+surface sill_labile_cracking_aureoles_direct.xyz -R0/4/0/500 -I0.5/50 -r -Gsill_labile_cracking_aureoles_direct.grd
+grdsample sill_labile_cracking_aureoles_direct.grd -I0.01/0.1 -Gsill_labile_cracking_aureoles_direct_plotting.grd
+grdimage sill_labile_cracking_aureoles_direct_plotting.grd -Ctmp.cpt -R0.2/3.5/0/400 -JX6 -Bxa1f0.1+l"Depth (km)" -Bya100f20+l"Thickness (m)" -BWeSn -O -K -X8 >> $OUT
+grdcontour sill_labile_cracking_aureoles_direct_plotting.grd -R -JX -A1 -Gn1 -W0.5p -O >> $OUT
+
+# WRITE OUT PARAMETERIZATION FOR PASTING INTO DIM2MT.AWK
+
+echo "For pasting into dim2mt.awk..."
+awk 'BEGIN{print 0, 0; print 0.5, 0; print 1.0, 0; print 1.5, 0; print 2.0, 0; print 2.5, 0; print 3.0, 0; print 3.5, 0; print 0, 50; print 0, 100; print 0, 200; print 0, 300; print 0, 400}' | \
+	grdtrack -Gsill_labile_cracking_aureoles_direct.grd > tmp.oil.0
+gawk -f ../single/load_dim2mt.awk -v var="YLab" sill_labile_cracking_aureoles_direct.xyz tmp.oil.0
+
+
+awk 'BEGIN{print 0, 0; print 0.5, 0; print 1.0, 0; print 1.5, 0; print 2.0, 0; print 2.5, 0; print 3.0, 0; print 3.5, 0; print 0, 50; print 0, 100; print 0, 200; print 0, 300; print 0, 400}' | \
+	grdtrack -Gsill_refractory_aureoles_direct.grd > tmp.ref.0
+gawk -f ../single/load_dim2mt.awk -v var="YRef" sill_refractory_aureoles_direct.xyz tmp.ref.0
+echo
+
+
+
+#
+# THICKNESS VERSUS DEPTH CONTOURED WITH DLESS AUREOLE 
+#
+
+
+
+
+
+
+
+
+psconvert $OUT -Tf
+psconvert $OUT -A -E300 -Qt4 -Qg4 -Tg
+open "${OUT%.ps}.pdf"
+exit

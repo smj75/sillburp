@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# COLLATE AND GRID PARAMETERIZED DECAY TIME
+# FOR LABILE KEROGEN BREAKDOWN FOLLOWED BY OIL CRACKING 
+# AND REFRACTORY KEROGEN BREAKDOWN
+
+
+OUT=./decay_time_flux.ps
+
+gmt gmtset MAP_FRAME_TYPE plain
+gmt gmtset MAP_FRAME_PEN 0.5p,black
+gmt gmtset MAP_TICK_LENGTH_PRIMARY 0.1c
+gmt gmtset MAP_TICK_LENGTH_SECONDARY 0.05c
+gmt gmtset MAP_LABEL_OFFSET 0.3c
+gmt gmtset FONT_LABEL 8p,Helvetica,black
+gmt gmtset FONT_ANNOT_PRIMARY 8p,Helvetica,black
+
+
+
+#
+# OIL CRACKING REACTION
+#
+
+gmt psbasemap -R0/400/0/3.5 -JX5 -Bxa100f50+l"Sill thickness (m)" -Bya0.5f0.1+l"Decay time factor" -BWeSn -P -K -X5 -Y20 > $OUT
+
+awk '{print $2, $3}' ./sill_0.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,230 -O -K >> $OUT
+awk '{print $2, $3}' ./sill_1km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,220 -O -K >> $OUT
+awk '{print $2, $3}' ./sill_1.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,192 -O -K >> $OUT
+awk '{print $2, $3}' ./sill_2km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,160 -O -K >> $OUT
+awk '{print $2, $3}' ./sill_2.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,128 -O -K >> $OUT
+awk '{print $2, $3}' ./sill_3km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,92 -O -K >> $OUT
+awk '{print $2, $3}' ./sill_3.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p -O -K >> $OUT
+
+
+cat <<EOF > tmp.zeros
+0	50	0.1
+0	100	0.1
+0	200	0.1
+0	300	0.1
+0	400	0.1
+EOF
+
+awk '{print $1, $2, $3}' ./sill_0.5km/parameterize_flux_results.dat ./sill_1km/parameterize_flux_results.dat ./sill_1.5km/parameterize_flux_results.dat ./sill_2km/parameterize_flux_results.dat ./sill_2.5km/parameterize_flux_results.dat ./sill_3km/parameterize_flux_results.dat ./sill_3.5km/parameterize_flux_results.dat > dless_decay_time_oil.xyz
+
+makecpt -Cseis -T0/4.5/0.5 -I -Z > tmp.cpt
+
+surface dless_decay_time_oil.xyz tmp.zeros -T0 -R0/4/0/500 -I0.5/50 -Ll0 -r -Gdless_decay_time_oil.grd
+grdsample dless_decay_time_oil.grd -I0.01/0.1 -Gdless_decay_time_oil_plotting.grd
+grdimage dless_decay_time_oil_plotting.grd -Ctmp.cpt -R0.2/3.5/0/400 -JX5 -Bxa1f0.1+l"Emplacement Depth (km)" -Bya100f20+l"Sill Thickness (m)" -BWeSn -K -O -X8 >> $OUT
+grdcontour dless_decay_time_oil_plotting.grd -R -JX -A1 -Gn1+r1.5c -W0.5p -O -K >> $OUT
+
+#gmt psbasemap  -JX5 -Bya100f50+l"Sill thickness (m)" -Bxa0.5f0.1+l"Emplacement Depth (km)" -BWeSn -O -K -X8 >> $OUT
+
+#gmt trend2d tmp.2km.oil -Fxym -N10+r -I -V
+#
+
+# WRITE OUT PARAMETERIZATION FOR PASTING INTO DIM2MT.AWK
+
+echo
+echo "For pasting into dim2mt.awk..."
+awk 'BEGIN{print 0, 0; print 0.5, 0; print 1.0, 0; print 1.5, 0; print 2.0, 0; print 2.5, 0; print 3.0, 0; print 3.5, 0; print 0, 50; print 0, 100; print 0, 200; print 0, 300; print 0, 400}' | \
+	grdtrack -Gdless_decay_time_oil.grd > tmp.oil.0
+gawk -f load_dim2mt.awk -v var="TauLab" dless_decay_time_oil.xyz tmp.oil.0
+
+
+
+#
+# REFRACTORY KEROGEN REACTION
+#
+
+gmt psbasemap -R0/400/0/3.5 -JX5 -Bxa100f50+l"Sill thickness (m)" -Bya0.5f0.1+l"Decay time factor" -BWeSn -O -K -X-8 -Y-8 >> $OUT
+
+awk '{print $2, $4}' ./sill_0.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,230 -O -K >> $OUT
+awk '{print $2, $4}' ./sill_1km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,220 -O -K >> $OUT
+awk '{print $2, $4}' ./sill_1.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,192 -O -K >> $OUT
+awk '{print $2, $4}' ./sill_2km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,160 -O -K >> $OUT
+awk '{print $2, $4}' ./sill_2.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,128 -O -K >> $OUT
+awk '{print $2, $4}' ./sill_3km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p,92 -O -K >> $OUT
+awk '{print $2, $4}' ./sill_3.5km/parameterize_flux_results.dat | \
+	gmt psxy -R -JX -W1p -O -K >> $OUT
+
+awk '{print $1, $2, $4}' ./sill_0.5km/parameterize_flux_results.dat ./sill_1km/parameterize_flux_results.dat ./sill_1.5km/parameterize_flux_results.dat ./sill_2km/parameterize_flux_results.dat ./sill_2.5km/parameterize_flux_results.dat ./sill_3km/parameterize_flux_results.dat ./sill_3.5km/parameterize_flux_results.dat > dless_decay_time_ref.xyz
+
+surface dless_decay_time_ref.xyz tmp.zeros -R0/4/0/500 -I0.5/50 -Ll0 -r -Gdless_decay_time_ref.grd
+grdsample dless_decay_time_ref.grd -I0.01/0.1 -Gdless_decay_time_ref_plotting.grd
+grdimage dless_decay_time_ref_plotting.grd -Ctmp.cpt -R0.2/3.5/0/400 -JX5 -Bxa1f0.1+l"Emplacement Depth (km)" -Bya100f20+l"Sill Thickness (m)" -BWeSn -K -O -X8 >> $OUT
+grdcontour dless_decay_time_ref_plotting.grd -R -JX -A1 -Gn1+r1.5c -W0.5p -O >> $OUT
+
+
+# WRITE OUT PARAMETERIZATION FOR PASTING INTO DIM2MT.AWK
+
+awk 'BEGIN{print 0, 0; print 0.5, 0; print 1.0, 0; print 1.5, 0; print 2.0, 0; print 2.5, 0; print 3.0, 0; print 3.5, 0; print 0, 50; print 0, 100; print 0, 200; print 0, 300; print 0, 400}' | \
+	grdtrack -Gdless_decay_time_ref.grd > tmp.ref.0
+gawk -f load_dim2mt.awk -v var="TauRef" dless_decay_time_ref.xyz tmp.ref.0
+echo
+
+
+
+psconvert $OUT -Tf
+psconvert $OUT -A -E300 -Qt4 -Qg4 -Tg
+open "${OUT%.ps}.pdf"
+exit
+
+
+
