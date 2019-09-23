@@ -1,9 +1,7 @@
 # sillburp
 **Greenhouse gas emissions from igneous sills.**
 
-Sillburp calculates the temperature and gas production history when an igneous sheet intrudes sedimentary rock.  
-The primary reference is, "Jones, S. M., Hoggett, M., Greene, S. E. & Dunkley Jones, T.,  Large Igneous Province thermogenic greenhouse gas flux could have initiated Paleocene-Eocene Thermal Maximum climate change, Nature Communications, in press Sept 2019," referred to below as Jea19.  
-See the Methods section.  
+Sillburp calculates the temperature and gas production history when an igneous sheet intrudes sedimentary rock.  The primary reference is, "Jones, S. M., Hoggett, M., Greene, S. E. & Dunkley Jones, T.,  Large Igneous Province thermogenic greenhouse gas flux could have initiated Paleocene-Eocene Thermal Maximum climate change, Nature Communications, in press Sept 2019," referred to below as Jea19; see the Methods section.  
 
 Make using "make".  Type "./sillburp" to see simple instructions.  Run GMT scripts in the order described to process model results.  
 
